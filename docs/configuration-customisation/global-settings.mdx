@@ -44,49 +44,36 @@ Choose from various supported editors:
 <img src="/images/vk-editor-ssh.png" alt="Vibe Kanban settings editor section showing ssh configuration options." />
 </Frame>
 
-When running Vibe Kanban on a remote server (e.g., accessed via Cloudflare tunnel, ngrok, or as a systemctl service), you can configure VSCode-based editors to open projects via SSH instead of assuming localhost.
-
-This feature is available for **VS Code**, **Cursor**, and **Windsurf** editors.
+Since Vibe Kanban runs inside a Docker container, your code files are located within the container's `/repos` volume. To open these files in your local IDE, you should configure **Remote SSH**.
 
 #### When to Use Remote SSH
 
 Enable remote SSH configuration when:
-- Vibe Kanban runs on a remote server (VPS, cloud instance, etc.)
+- Vibe Kanban runs in Docker (local or remote)
 - You access the web UI through a tunnel or reverse proxy
-- Your code files are on a different machine than your browser
-- You want your local editor to connect to the remote server via SSH
+- You want your local editor to connect to the Docker host via SSH
 
 #### Configuration Fields
 
 1. **Remote SSH Host** (Optional)
-   - The hostname or IP address of your remote server
-   - Examples: `example.com`, `192.168.1.100`, `my-server`
+   - The hostname or IP address of your Docker host
+   - Examples: `localhost`, `192.168.1.100`, `my-server`
    - Must be accessible via SSH from your local machine
 
 2. **Remote SSH User** (Optional)
-   - The SSH username for connecting to the remote server
-   - If not specified, SSH will use your default user or SSH config
+   - The SSH username for connecting to the Docker host
 
 #### How It Works
 
 When remote SSH is configured, clicking "Open in VSCode" (or Cursor/Windsurf):
 1. Generates a special protocol URL like: `vscode://vscode-remote/ssh-remote+user@host/path/to/project`
 2. Opens in your default browser, which launches your local editor
-3. Your editor connects to the remote server via SSH
+3. Your editor connects to the host via SSH
 4. The project or task worktree opens in the remote context
 
-This works for both project-level and task worktree opening.
-
-#### Prerequisites
-
-- SSH access configured between your local machine and remote server
-- SSH keys or credentials set up (no password prompts)
-- VSCode Remote-SSH extension installed (or equivalent for Cursor/Windsurf)
-- The remote server path must be accessible via SSH
-
-<Tip>
-Test your SSH connection first with `ssh user@host` to ensure it works without prompting for passwords.
-</Tip>
+<Note>
+Ensure the path on the host matches the path mapped to `/repos` in your `docker-compose.yml`.
+</Note>
 
 ## Git Configuration
 
@@ -114,7 +101,7 @@ Manage global task tags to accelerate task creation across all projects. Task ta
 
 ## Agent Settings (Profiles & Variants)
 
-Define and customise agent variants under **Settings → Agents**. Variants let you maintain multiple configurations for the same agent (for example, a Claude Code "PLAN" variant).
+Define and customise agent variants under **Settings → Agents**. Variants let you maintain multiple configurations for the same agent.
 
 <Card title="Agent Profiles & Variants" icon="robot" href="/configuration-customisation/agent-configurations">
   Detailed guide with examples for configuring agent variants
@@ -123,7 +110,3 @@ Define and customise agent variants under **Settings → Agents**. Variants let 
 ## Safety & Disclaimers
 
 Manage acknowledgments and reset options for onboarding, safety disclaimers, and telemetry notices.
-
-- **Onboarding**: Reset the onboarding process to rerun the initial setup.
-- **Safety Disclaimer**: Reset or review the safety disclaimer prompt.
-- **Telemetry Notice**: Reset or review the telemetry data collection acknowledgment.

@@ -13,8 +13,9 @@ COPY frontend/package.json frontend/package.json
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
     pnpm install --filter ./frontend --frozen-lockfile
 
-# Copy frontend source and build
+# Copy frontend source, shared types, and build
 COPY frontend/ frontend/
+COPY shared/ shared/
 RUN pnpm -C frontend build
 
 # Stage 2: Backend Builder

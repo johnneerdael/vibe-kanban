@@ -63,6 +63,8 @@ You can customize the deployment by modifying the `environment` section in `dock
 - `RUST_LOG`: Set the logging level (e.g., `debug`, `info`, `warn`, `error`).
 - `PORT`: The port the server listens on inside the container (default: `3000`).
 - `HOST`: The host the server binds to (default: `0.0.0.0`).
+- `AUTH_USER`: (Optional) Username for Basic Auth.
+- `AUTH_PASS`: (Optional) Password for Basic Auth.
 
 ## Troubleshooting
 

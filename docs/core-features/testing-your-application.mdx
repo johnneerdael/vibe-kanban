@@ -24,7 +24,7 @@ Preview Mode provides an embedded browser experience within Vibe Kanban, allowin
 
 <Steps>
 <Step title="Configure Development Server Script">
-  Navigate to your project settings and configure the development server script that starts your local development environment.
+  Navigate to your project settings and configure the development server script. Since Vibe Kanban runs in Docker, this script will execute inside the container environment.
 
   **Common examples:**
   - `npm run dev` (Vite, Next.js)
@@ -41,7 +41,7 @@ Preview Mode provides an embedded browser experience within Vibe Kanban, allowin
   </Info>
 
   <Tip>
-  Ensure your development server prints the URL (e.g., `http://localhost:3000`) to stdout/stderr for automatic detection.
+  Ensure your development server prints the URL (e.g., `http://localhost:3000`) to stdout/stderr for automatic detection. Vibe Kanban will automatically proxy this internal container port to the web UI.
   </Tip>
 </Step>
 

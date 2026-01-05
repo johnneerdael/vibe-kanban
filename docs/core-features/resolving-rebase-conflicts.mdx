@@ -69,8 +69,8 @@ If you prefer to resolve conflicts manually, you have two options:
   After editing all conflicts, stage and continue:
   
   ```bash
-  git add .
-  git rebase --continue
+  docker compose exec vibe-kanban git add .
+  docker compose exec vibe-kanban git rebase --continue
   ```
 </Step>
 </Steps>
@@ -88,7 +88,7 @@ If you need to cancel the rebase entirely, click **Abort Rebase** to return to t
 If you've changed the base branch of your task attempt and see commits unrelated to your changes, you can use `git rebase --onto` to rebase only your work onto the new base:
 
 ```bash
-git rebase <last-commit-before-your-work> --onto <new-base>
+docker compose exec vibe-kanban git rebase <last-commit-before-your-work> --onto <new-base>
 ```
 
 ### Example Scenario
@@ -98,7 +98,7 @@ You accidentally created a task attempt from the `develop` branch, but it should
 ```bash
 # Find the last commit before your work started (e.g., in the git log)
 # Then rebase only your commits onto main
-git rebase 64d504c94d076070d17affd3f84be63b34515445 --onto main
+docker compose exec vibe-kanban git rebase 64d504c94d076070d17affd3f84be63b34515445 --onto main
 ```
 
 This command takes your commits (everything after the specified commit hash) and replays them onto `main`, excluding the unrelated commits from `develop`.

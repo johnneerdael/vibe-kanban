@@ -6,22 +6,24 @@ icon: https://www.vibekanban.com/images/logos/gemini-logo.svg
 
 <Steps>
 <Step title="Run Gemini CLI">
+  Authenticate Gemini CLI by running the following command inside your Vibe Kanban container:
+
   ```bash
-  npx -y @google/gemini-cli
+  docker compose exec vibe-kanban npx -y @google/gemini-cli
   ```
 </Step>
 
 <Step title="Follow the login instructions">
-  Complete the authentication flow as prompted. For more details, see [geminicli.com](https://geminicli.com/).
+  Complete the authentication flow as prompted in your terminal. This will save your credentials to the `/data` volume. For more details, see [geminicli.com](https://geminicli.com/).
 </Step>
 
 <Step title="Start Vibe Kanban">
-  Once authenticated, launch Vibe Kanban:
+  Once authenticated, launch Vibe Kanban using Docker Compose:
 
   ```bash
-  npx vibe-kanban
+  docker compose up -d
   ```
 
-  You can now select Gemini CLI when creating task attempts.
+  You can now select Gemini CLI when creating task attempts in the web UI.
 </Step>
 </Steps>

@@ -43,8 +43,8 @@ Add the following configuration to your agent's MCP servers configuration:
 {
   "mcpServers": {
     "vibe_kanban": {
-      "command": "npx",
-      "args": ["-y", "vibe-kanban@latest", "--mcp"]
+      "command": "docker",
+      "args": ["exec", "vibe-kanban", "mcp_task_server"]
     }
   }
 }

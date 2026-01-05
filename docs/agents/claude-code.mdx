@@ -6,22 +6,24 @@ icon: https://www.vibekanban.com/images/logos/claude.svg#"
 
 <Steps>
 <Step title="Run Claude Code">
+  Authenticate Claude Code by running the following command inside your Vibe Kanban container:
+
   ```bash
-  npx -y @anthropic-ai/claude-code
+  docker compose exec vibe-kanban npx -y @anthropic-ai/claude-code
   ```
 </Step>
 
 <Step title="Follow the login instructions">
-  Complete the authentication flow as prompted. For more details, see the [Claude Code documentation](https://docs.claude.com/en/docs/claude-code/quickstart).
+  Complete the authentication flow as prompted in your terminal. This will save your credentials to the `/data` volume, ensuring they persist across container restarts. For more details, see the [Claude Code documentation](https://docs.claude.com/en/docs/claude-code/quickstart).
 </Step>
 
 <Step title="Start Vibe Kanban">
-  Once authenticated, launch Vibe Kanban:
+  Once authenticated, launch Vibe Kanban using Docker Compose:
 
   ```bash
-  npx vibe-kanban
+  docker compose up -d
   ```
 
-  You can now select Claude Code when creating task attempts.
+  You can now select Claude Code when creating task attempts in the web UI.
 </Step>
 </Steps>

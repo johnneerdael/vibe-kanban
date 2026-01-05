@@ -52,7 +52,7 @@ Example addition:
     },
     "my_custom_server": {
       "command": "node",
-      "args": ["/path/to/my-server.js"]
+      "args": ["/data/mcp/my-server.js"]
     }
   }
 }
@@ -67,7 +67,7 @@ After updating the JSON configuration:
 3. Check agent logs for any connection issues
 
 <Check>
-These changes update the global configuration file of the coding agent and will persist even if you stop using Vibe Kanban.
+These changes update the global configuration file of the coding agent. Since Vibe Kanban runs in Docker, ensure any custom server files are placed in a volume-mapped directory like `/data` to be accessible.
 </Check>
 </Step>
 </Steps>

@@ -6,22 +6,24 @@ icon: https://www.vibekanban.com/images/logos/github-copilot-logo.svg
 
 <Steps>
 <Step title="Run GitHub Copilot">
+  Authenticate GitHub Copilot by running the following command inside your Vibe Kanban container:
+
   ```bash
-  npx -y @github/copilot
+  docker compose exec vibe-kanban npx -y @github/copilot
   ```
 </Step>
 
 <Step title="Follow the login instructions">
-  When prompted, follow the on-screen instructions to authenticate using the `/login` command. For more details, see the [GitHub Copilot CLI documentation](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli).
+  When prompted, follow the on-screen instructions to authenticate using the `/login` command. This will save your credentials to the `/data` volume. For more details, see the [GitHub Copilot CLI documentation](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli).
 </Step>
 
 <Step title="Start Vibe Kanban">
-  Once authenticated, launch Vibe Kanban:
+  Once authenticated, launch Vibe Kanban using Docker Compose:
 
   ```bash
-  npx vibe-kanban
+  docker compose up -d
   ```
 
-  You can now select GitHub Copilot when creating task attempts.
+  You can now select GitHub Copilot when creating task attempts in the web UI.
 </Step>
 </Steps>

@@ -14,8 +14,8 @@ When you start a task, the main panel provides real-time visibility into everyth
 
 When you start a task attempt, Vibe Kanban orchestrates several steps to create an isolated environment and execute your task:
 
-1. **Git Worktree Creation**: An isolated environment is created for this task attempt
-2. **Setup Scripts Run**: Any setup script defined in your project settings runs automatically
+1. **Git Worktree Creation**: An isolated environment is created for this task attempt inside the container's `/repos` directory.
+2. **Setup Scripts Run**: Any setup script defined in your project settings runs automatically within the container environment.
 3. **Agent Execution**: The coding agent processes your task using the title and description  
 4. **Real-time Monitoring**: Watch progress through streaming logs in the task interface
 5. **Follow-up Questions**: Continue the conversation after execution to refine results

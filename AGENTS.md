@@ -18,16 +18,22 @@ When making changes to the types, you can regenerate them using `pnpm run genera
 Do not manually edit shared/types.ts, instead edit crates/server/src/bin/generate_types.rs
 
 ## Build, Test, and Development Commands
+
+### Docker (Recommended)
+- Build and run: `docker compose up --build`
+- Run in background: `docker compose up -d`
+- View logs: `docker compose logs -f`
+- Stop: `docker compose down`
+
+### Local Development
 - Install: `pnpm i`
-- Run dev (frontend + backend with ports auto-assigned): `pnpm run dev`
+- Run dev (frontend + backend): `pnpm run dev`
 - Backend (watch): `pnpm run backend:dev:watch`
 - Frontend (dev): `pnpm run frontend:dev`
 - Type checks: `pnpm run check` (frontend) and `pnpm run backend:check` (Rust cargo check)
 - Rust tests: `cargo test --workspace`
-- Generate TS types from Rust: `pnpm run generate-types` (or `generate-types:check` in CI)
+- Generate TS types from Rust: `pnpm run generate-types`
 - Prepare SQLx (offline): `pnpm run prepare-db`
-- Prepare SQLx (remote package, postgres): `pnpm run remote:prepare-db`
-- Local NPX build: `pnpm run build:npx` then `pnpm pack` in `npx-cli/`
 
 ## Coding Style & Naming Conventions
 - Rust: `rustfmt` enforced (`rustfmt.toml`); group imports by crate; snake_case modules, PascalCase types.

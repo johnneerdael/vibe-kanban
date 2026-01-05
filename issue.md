@@ -1,35 +1,54 @@
-#30 237.4   cargo:rerun-if-env-changed=RANLIBFLAGS_x86_64-unknown-linux-gnu
-#30 237.4   RANLIBFLAGS_x86_64-unknown-linux-gnu = None
-#30 237.4   running cd "/app/target/release/build/openssl-sys-ad0d6250e985b9f7/out/openssl-build/build/src" && env -u CROSS_COMPILE AR="ar" CC="cc" RANLIB="ranlib" "perl" "./Configure" "--prefix=/app/target/release/build/openssl-sys-ad0d6250e985b9f7/out/openssl-build/install" "--openssldir=/usr/local/ssl" "no-shared" "no-module" "no-tests" "no-comp" "no-zlib" "no-zlib-dynamic" "--libdir=lib" "no-ssl3" "no-md2" "no-rc5" "no-weak-ssl-ciphers" "no-camellia" "no-idea" "no-seed" "linux-x86_64" "-O2" "-ffunction-sections" "-fdata-sections" "-fPIC" "-g" "-gdwarf-4" "-fno-omit-frame-pointer" "-m64" "-w"
-#30 237.4   cargo:warning=configuring OpenSSL build: 'perl' reported failure with exit status: 2
-#30 237.4   cargo:warning=openssl-src: failed to build OpenSSL from source
-#30 237.4
-#30 237.4   --- stderr
-#30 237.4   Can't locate FindBin.pm in @INC (you may need to install the FindBin module) (@INC contains: /etc/perl /usr/local/lib/x86_64-linux-gnu/perl/5.36.0 /usr/local/share/perl/5.36.0 /usr/lib/x86_64-linux-gnu/perl5/5.36 /usr/share/perl5 /usr/lib/x86_64-linux-gnu/perl-base /usr/lib/x86_64-linux-gnu/perl/5.36 /usr/share/perl/5.36 /usr/local/lib/site_perl) at ./Configure line 15.
-#30 237.4   BEGIN failed--compilation aborted at ./Configure line 15.
-#30 237.4
-#30 237.4
-#30 237.4
-#30 237.4   Error configuring OpenSSL build:
-#30 237.4       'perl' reported failure with exit status: 2
-#30 237.4       Command failed: cd "/app/target/release/build/openssl-sys-ad0d6250e985b9f7/out/openssl-build/build/src" && env -u CROSS_COMPILE AR="ar" CC="cc" RANLIB="ranlib" "perl" "./Configure" "--prefix=/app/target/release/build/openssl-sys-ad0d6250e985b9f7/out/openssl-build/install" "--openssldir=/usr/local/ssl" "no-shared" "no-module" "no-tests" "no-comp" "no-zlib" "no-zlib-dynamic" "--libdir=lib" "no-ssl3" "no-md2" "no-rc5" "no-weak-ssl-ciphers" "no-camellia" "no-idea" "no-seed" "linux-x86_64" "-O2" "-ffunction-sections" "-fdata-sections" "-fPIC" "-g" "-gdwarf-4" "-fno-omit-frame-pointer" "-m64" "-w"
-#30 237.4
-#30 237.4
-#30 237.4
-#30 237.4 warning: build failed, waiting for other jobs to finish...
+ld/src" && env -u CROSS_COMPILE AR="ar" CC="cc" RANLIB="ranlib" "perl" "./Configure" "--prefix=/app/target/release/build/openssl-sys-ad0d6250e985b9f7/out/openssl-build/install" "--openssldir=/usr/local/ssl" "no-shared" "no-module" "no-tests" "no-comp" "no-zlib" "no-zlib-dynamic" "--libdir=lib" "no-ssl3" "no-md2" "no-rc5" "no-weak-ssl-ciphers" "no-camellia" "no-idea" "no-seed" "linux-x86_64" "-O2" "-ffunction-sections" "-fdata-sections" "-fPIC" "-g" "-gdwarf-4" "-fno-omit-frame-pointer" "-m64" "-w"
+#30 61.03   Configuring OpenSSL version 3.5.4 for target linux-x86_64
+#30 61.03   Using os-specific seed configuration
+#30 61.03   Created configdata.pm
+#30 61.03   Running configdata.pm
+#30 61.03   Created Makefile.in
+#30 61.03   Created Makefile
+#30 61.03   Created include/openssl/configuration.h
+#30 61.03
+#30 61.03   **********************************************************************
+#30 61.03   ***                                                                ***
+#30 61.03   ***   OpenSSL has been successfully configured                     ***
+#30 61.03   ***                                                                ***
+#30 61.03   ***   If you encounter a problem while building, please open an    ***
+#30 61.03   ***   issue on GitHub <https://github.com/openssl/openssl/issues>  ***
+#30 61.03   ***   and include the output from the following command:           ***
+#30 61.03   ***                                                                ***
+#30 61.03   ***       perl configdata.pm --dump                                ***
+#30 61.03   ***                                                                ***
+#30 61.03   ***   (If you are new to OpenSSL, you might want to consult the    ***
+#30 61.03   ***   'Troubleshooting' section in the INSTALL.md file first)      ***
+#30 61.03   ***                                                                ***
+#30 61.03   **********************************************************************
+#30 61.03   running cd "/app/target/release/build/openssl-sys-ad0d6250e985b9f7/out/openssl-build/build/src" && "make" "depend"
+#30 61.03   cargo:warning=building OpenSSL dependencies: Command 'make' not found. Is make installed?
+#30 61.03   cargo:warning=openssl-src: failed to build OpenSSL from source
+#30 61.03
+#30 61.03   --- stderr
+#30 61.03
+#30 61.03
+#30 61.03
+#30 61.03   Error building OpenSSL dependencies:
+#30 61.03       Command 'make' not found. Is make installed?
+#30 61.03       Command failed: cd "/app/target/release/build/openssl-sys-ad0d6250e985b9f7/out/openssl-build/build/src" && "make" "depend"
+#30 61.03
+#30 61.03
+#30 61.03
+#30 61.03 warning: build failed, waiting for other jobs to finish...
 #30 ERROR: process "/bin/sh -c cargo build --locked --release --bin server --bin mcp_task_server --bin review  && mkdir -p /app/bin  && cp target/release/server /app/bin/server  && cp target/release/mcp_task_server /app/bin/mcp_task_server  && cp target/release/review /app/bin/review" did not complete successfully: exit code: 101
 ------
  > [builder 9/9] RUN --mount=type=cache,target=/usr/local/cargo/registry     --mount=type=cache,target=/usr/local/cargo/git     --mount=type=cache,target=/app/target     cargo build --locked --release --bin server --bin mcp_task_server --bin review  && mkdir -p /app/bin  && cp target/release/server /app/bin/server  && cp target/release/mcp_task_server /app/bin/mcp_task_server  && cp target/release/review /app/bin/review:
-237.4
-237.4
-237.4
-237.4   Error configuring OpenSSL build:
-237.4       'perl' reported failure with exit status: 2
-237.4       Command failed: cd "/app/target/release/build/openssl-sys-ad0d6250e985b9f7/out/openssl-build/build/src" && env -u CROSS_COMPILE AR="ar" CC="cc" RANLIB="ranlib" "perl" "./Configure" "--prefix=/app/target/release/build/openssl-sys-ad0d6250e985b9f7/out/openssl-build/install" "--openssldir=/usr/local/ssl" "no-shared" "no-module" "no-tests" "no-comp" "no-zlib" "no-zlib-dynamic" "--libdir=lib" "no-ssl3" "no-md2" "no-rc5" "no-weak-ssl-ciphers" "no-camellia" "no-idea" "no-seed" "linux-x86_64" "-O2" "-ffunction-sections" "-fdata-sections" "-fPIC" "-g" "-gdwarf-4" "-fno-omit-frame-pointer" "-m64" "-w"
-237.4
-237.4
-237.4
-237.4 warning: build failed, waiting for other jobs to finish...
+61.03
+61.03
+61.03
+61.03   Error building OpenSSL dependencies:
+61.03       Command 'make' not found. Is make installed?
+61.03       Command failed: cd "/app/target/release/build/openssl-sys-ad0d6250e985b9f7/out/openssl-build/build/src" && "make" "depend"
+61.03
+61.03
+61.03
+61.03 warning: build failed, waiting for other jobs to finish...
 ------
 Dockerfile:43
 

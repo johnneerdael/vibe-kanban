@@ -1,6 +1,7 @@
 services:
   vibe-kanban:
     container-name: "vibe-kanban"
+    image: johnneerdael/vibe-kanban:main
     ports:
       - "3000:3000"
     volumes:

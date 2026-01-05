@@ -16,6 +16,8 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 # Copy frontend source, shared types, and build
 COPY frontend/ frontend/
 COPY shared/ shared/
+# Increase memory limit for Node.js to avoid OOM during build
+ENV NODE_OPTIONS="--max-old-space-size=4096"
 RUN pnpm -C frontend build
 
 # Stage 2: Backend Builder

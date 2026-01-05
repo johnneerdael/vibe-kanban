@@ -91,13 +91,13 @@
     "links": [
       {
         "label": "GitHub",
-        "href": "https://github.com/BloopAI/vibe-kanban"
+        "href": "https://github.com/johnneerdael/vibe-kanban"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Get Started",
-      "href": "https://vibekanban.com/docs"
+      "href": "https://github.com/johnneerdael/vibe-kanban/tree/main/docs"
     }
   },
   "contextual": {
@@ -120,8 +120,7 @@
   },
   "footer": {
     "socials": {
-      "github": "https://github.com/BloopAI/vibe-kanban",
-      "x": "https://x.com/vibekanban"
+      "github": "https://github.com/johnneerdael/vibe-kanban"
     }
   }
 }

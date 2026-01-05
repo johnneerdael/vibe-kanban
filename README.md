@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://vibekanban.com">
+  <a href="https://github.com/johnneerdael/vibe-kanban">
     <picture>
       <source srcset="frontend/public/vibe-kanban-logo-dark.svg" media="(prefers-color-scheme: dark)">
       <source srcset="frontend/public/vibe-kanban-logo.svg" media="(prefers-color-scheme: light)">
@@ -8,123 +8,72 @@
   </a>
 </p>
 
-<p align="center">Get 10X more out of Claude Code, Gemini CLI, Codex, Amp and other coding agents...</p>
+<p align="center">Orchestrate AI coding agents with confidence. Plan, review, and manage AI-generated code in isolated git worktrees.</p>
 <p align="center">
-  <a href="https://www.npmjs.com/package/vibe-kanban"><img alt="npm" src="https://img.shields.io/npm/v/vibe-kanban?style=flat-square" /></a>
-  <a href="https://github.com/BloopAI/vibe-kanban/blob/main/.github/workflows/publish.yml"><img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/BloopAI/vibe-kanban/.github%2Fworkflows%2Fpublish.yml" /></a>
-  <a href="https://deepwiki.com/BloopAI/vibe-kanban"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
+  <a href="https://hub.docker.com/r/johnneerdael/vibe-kanban"><img alt="Docker Image Version" src="https://img.shields.io/docker/v/johnneerdael/vibe-kanban?label=docker&style=flat-square" /></a>
+  <a href="https://github.com/johnneerdael/vibe-kanban/actions/workflows/docker-publish.yml"><img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/johnneerdael/vibe-kanban/docker-publish.yml?style=flat-square" /></a>
 </p>
-
-<h1 align="center">
-  <a href="https://jobs.polymer.co/vibe-kanban?source=github"><strong>We're hiring!</strong></a>
-</h1>
 
 ![](frontend/public/vibe-kanban-screenshot-overview.png)
 
 ## Overview
 
-AI coding agents are increasingly writing the world's code and human engineers now spend the majority of their time planning, reviewing, and orchestrating tasks. Vibe Kanban streamlines this process, enabling you to:
+Vibe Kanban is an orchestration platform for AI coding agents that helps developers plan, review, and safely execute AI-assisted coding tasks. This branch is optimized for **Docker-only deployment**, providing a stable, containerized environment for your AI workflows.
 
-- Easily switch between different coding agents
-- Orchestrate the execution of multiple coding agents in parallel or in sequence
-- Quickly review work and start dev servers
-- Track the status of tasks that your coding agents are working on
-- Centralise configuration of coding agent MCP configs
-- Open projects remotely via SSH when running Vibe Kanban on a remote server
+- **Safe AI Execution**: Every task runs in an isolated git worktree.
+- **Multi-Agent Support**: Switch between Claude Code, OpenAI Codex, Amp, Cursor Agent CLI, Gemini, and more.
+- **Visual Code Review**: Review AI changes with line-by-line diffs and send feedback back to the agent.
+- **Persistence**: SQLite database and repository storage are persisted via Docker volumes.
 
-You can watch a video overview [here](https://youtu.be/TFT3KnZOOAk).
+## Quick Start
 
-## Installation
+The easiest way to run Vibe Kanban is using Docker Compose.
 
-Make sure you have authenticated with your favourite coding agent. A full list of supported coding agents can be found in the [docs](https://vibekanban.com/docs). Then in your terminal run:
+### 1. Create a `docker-compose.yml`
+
+```yaml
+services:
+  vibe-kanban:
+    image: johnneerdael/vibe-kanban:main
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/data
+      - ./repos:/repos
+    environment:
+      - RUST_LOG=info
+      - AUTH_USER=admin    # Optional: Enable Basic Auth
+      - AUTH_PASS=password # Optional: Enable Basic Auth
+    restart: unless-stopped
+```
+
+### 2. Launch
 
 ```bash
-npx vibe-kanban
+docker compose up -d
 ```
+
+Access the UI at [http://localhost:3000](http://localhost:3000).
 
 ## Documentation
 
-Please head to the [website](https://vibekanban.com/docs) for the latest documentation and user guides.
+For detailed guides on configuration, agent setup, and advanced features, visit our [Documentation](https://github.com/johnneerdael/vibe-kanban/tree/main/docs).
 
-## Support
+- [Getting Started](./docs/getting-started.mdx)
+- [Supported Agents](./docs/supported-coding-agents.mdx)
+- [GitHub Integration](./docs/integrations/github-integration.md)
 
-We use [GitHub Discussions](https://github.com/BloopAI/vibe-kanban/discussions) for feature requests. Please open a discussion to create a feature request. For bugs please open an issue on this repo.
+## GitHub Integration
 
-## Contributing
-
-We would prefer that ideas and changes are first raised with the core team via [GitHub Discussions](https://github.com/BloopAI/vibe-kanban/discussions) or [Discord](https://discord.gg/AC4nwVtJM3), where we can discuss implementation details and alignment with the existing roadmap. Please do not open PRs without first discussing your proposal with the team.
-
-## Development
-
-### Prerequisites
-
-- [Rust](https://rustup.rs/) (latest stable)
-- [Node.js](https://nodejs.org/) (>=18)
-- [pnpm](https://pnpm.io/) (>=8)
-
-Additional development tools:
-```bash
-cargo install cargo-watch
-cargo install sqlx-cli
-```
-
-Install dependencies:
-```bash
-pnpm i
-```
-
-### Running the dev server
+To enable GitHub integration (creating PRs), authenticate the GitHub CLI inside the container:
 
 ```bash
-pnpm run dev
+docker compose exec vibe-kanban gh auth login
 ```
 
-This will start the backend. A blank DB will be copied from the `dev_assets_seed` folder.
+## Support & Contributing
 
-### Building the frontend
+Please open an issue on this repository for bugs or feature requests. We welcome contributions that align with the Docker-first roadmap.
 
-To build just the frontend:
-
-```bash
-cd frontend
-pnpm build
-```
-
-### Build from source (macOS)
-
-1. Run `./local-build.sh`
-2. Test with `cd npx-cli && node bin/cli.js`
-
-
-### Environment Variables
-
-The following environment variables can be configured at build time or runtime:
-
-| Variable | Type | Default | Description |
-|----------|------|---------|-------------|
-| `POSTHOG_API_KEY` | Build-time | Empty | PostHog analytics API key (disables analytics if empty) |
-| `POSTHOG_API_ENDPOINT` | Build-time | Empty | PostHog analytics endpoint (disables analytics if empty) |
-| `PORT` | Runtime | Auto-assign | **Production**: Server port. **Dev**: Frontend port (backend uses PORT+1) |
-| `BACKEND_PORT` | Runtime | `0` (auto-assign) | Backend server port (dev mode only, overrides PORT+1) |
-| `FRONTEND_PORT` | Runtime | `3000` | Frontend dev server port (dev mode only, overrides PORT) |
-| `HOST` | Runtime | `127.0.0.1` | Backend server host |
-| `DISABLE_WORKTREE_ORPHAN_CLEANUP` | Runtime | Not set | Disable git worktree cleanup (for debugging) |
-
-**Build-time variables** must be set when running `pnpm run build`. **Runtime variables** are read when the application starts.
-
-### Remote Deployment
-
-When running Vibe Kanban on a remote server (e.g., via systemctl, Docker, or cloud hosting), you can configure your editor to open projects via SSH:
-
-1. **Access via tunnel**: Use Cloudflare Tunnel, ngrok, or similar to expose the web UI
-2. **Configure remote SSH** in Settings → Editor Integration:
-   - Set **Remote SSH Host** to your server hostname or IP
-   - Set **Remote SSH User** to your SSH username (optional)
-3. **Prerequisites**:
-   - SSH access from your local machine to the remote server
-   - SSH keys configured (passwordless authentication)
-   - VSCode Remote-SSH extension
-
-When configured, the "Open in VSCode" buttons will generate URLs like `vscode://vscode-remote/ssh-remote+user@host/path` that open your local editor and connect to the remote server.
-
-See the [documentation](https://vibekanban.com/docs/configuration-customisation/global-settings#remote-ssh-configuration) for detailed setup instructions.
+---
+<p align="center">Built with Rust and React.</p>

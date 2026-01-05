@@ -1,82 +1,103 @@
-# Build stage
-FROM node:24-alpine AS builder
+# Stage 1: Frontend Builder
+FROM node:20-alpine AS fe-builder
+WORKDIR /repo
+
+# Enable corepack for pnpm
+RUN corepack enable
+
+# Copy workspace files
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY frontend/package.json frontend/package.json
+
+# Install dependencies
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+    pnpm install --filter ./frontend --frozen-lockfile
+
+# Copy frontend source and build
+COPY frontend/ frontend/
+RUN pnpm -C frontend build
+
+# Stage 2: Backend Builder
+FROM rust:1.89-slim-bookworm AS builder
 
 # Install build dependencies
-RUN apk add --no-cache \
-    curl \
-    build-base \
-    perl \
-    llvm-dev \
-    clang-dev
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends pkg-config libssl-dev ca-certificates \
+  && rm -rf /var/lib/apt/lists/*
 
-# Allow linking libclang on musl
-ENV RUSTFLAGS="-C target-feature=-crt-static"
-
-# Install Rust
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-ENV PATH="/root/.cargo/bin:${PATH}"
-
-ARG POSTHOG_API_KEY
-ARG POSTHOG_API_ENDPOINT
-
-ENV VITE_PUBLIC_POSTHOG_KEY=$POSTHOG_API_KEY
-ENV VITE_PUBLIC_POSTHOG_HOST=$POSTHOG_API_ENDPOINT
-
-# Set working directory
 WORKDIR /app
 
-# Copy package files for dependency caching
-COPY package*.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY frontend/package*.json ./frontend/
-COPY npx-cli/package*.json ./npx-cli/
+# Copy workspace files
+COPY Cargo.toml Cargo.lock ./
+COPY crates crates
+COPY shared shared
+COPY assets assets
 
-# Install pnpm and dependencies
-RUN npm install -g pnpm && pnpm install
+# Copy built frontend for embedding
+COPY --from=fe-builder /repo/frontend/dist frontend/dist
 
-# Copy source code
-COPY . .
+# Build all binaries
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+    --mount=type=cache,target=/usr/local/cargo/git \
+    --mount=type=cache,target=/app/target \
+    cargo build --locked --release --bin server --bin mcp_task_server --bin review \
+ && mkdir -p /app/bin \
+ && cp target/release/server /app/bin/server \
+ && cp target/release/mcp_task_server /app/bin/mcp_task_server \
+ && cp target/release/review /app/bin/review
 
-# Build application
-RUN npm run generate-types
-RUN cd frontend && pnpm run build
-RUN cargo build --release --bin server
-
-# Runtime stage
-FROM alpine:latest AS runtime
+# Stage 3: Runtime
+FROM debian:bookworm-slim AS runtime
 
 # Install runtime dependencies
-RUN apk add --no-cache \
-    ca-certificates \
-    tini \
-    libgcc \
-    wget
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+     ca-certificates \
+     libssl3 \
+     wget \
+     git \
+     tini \
+     curl \
+  && curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+  && chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+  && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+  && apt-get update \
+  && apt-get install -y gh \
+  && rm -rf /var/lib/apt/lists/*
 
-# Create app user for security
-RUN addgroup -g 1001 -S appgroup && \
-    adduser -u 1001 -S appuser -G appgroup
+# Create app user
+RUN useradd --system --create-home --uid 10001 appuser
 
-# Copy binary from builder
-COPY --from=builder /app/target/release/server /usr/local/bin/server
+# Set up directories for persistence
+RUN mkdir -p /data /repos && \
+    chown -R appuser:appuser /data /repos
 
-# Create repos directory and set permissions
-RUN mkdir -p /repos && \
-    chown -R appuser:appgroup /repos
+WORKDIR /srv
 
-# Switch to non-root user
+# Copy binaries from builder
+COPY --from=builder /app/bin/server /usr/local/bin/server
+COPY --from=builder /app/bin/mcp_task_server /usr/local/bin/mcp_task_server
+COPY --from=builder /app/bin/review /usr/local/bin/review
+
+# Copy frontend assets (embedded in binary via rust-embed, but we can also serve them directly if needed)
+# The server binary expects them at ../../frontend/dist relative to where it was built, 
+# but rust-embed usually bundles them into the binary.
+# If the binary needs them on disk, we'd copy them here.
+
 USER appuser
 
-# Set runtime environment
-ENV HOST=0.0.0.0
-ENV PORT=3000
+# Persistence environment
+ENV XDG_DATA_HOME=/data \
+    XDG_CONFIG_HOME=/data \
+    HOST=0.0.0.0 \
+    PORT=3000 \
+    RUST_LOG=info
+
 EXPOSE 3000
 
-# Set working directory
-WORKDIR /repos
-
 # Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD wget --quiet --tries=1 --spider "http://${HOST:-localhost}:${PORT:-3000}" || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD ["wget", "--spider", "-q", "http://127.0.0.1:3000/health"]
 
-# Run the application
-ENTRYPOINT ["/sbin/tini", "--"]
+ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD ["server"]

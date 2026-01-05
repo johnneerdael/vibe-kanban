@@ -1,0 +1,21 @@
+services:
+  vibe-kanban:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/data
+      - ./repos:/repos
+    environment:
+      - HOST=0.0.0.0
+      - PORT=3000
+      - RUST_LOG=info
+      - XDG_DATA_HOME=/data
+      - XDG_CONFIG_HOME=/data
+    restart: unless-stopped
+
+volumes:
+  data:
+  repos:

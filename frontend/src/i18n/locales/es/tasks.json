@@ -235,7 +235,8 @@
       "changeTargetBranch": "Error al cambiar rama de destino",
       "mergeChanges": "Error al fusionar cambios",
       "pushChanges": "Error al enviar cambios",
-      "rebaseBranch": "Error al hacer rebase de la rama"
+      "rebaseBranch": "Error al hacer rebase de la rama",
+      "branchStatusUnavailable": "No se puede obtener el estado de la rama. Aún puedes cambiar la rama de destino."
     },
     "labels": {
       "taskBranch": "Rama de tarea"
@@ -312,7 +313,9 @@
       "copyUrl": "Copiar URL",
       "openInTab": "Abrir en nueva pestaña",
       "refresh": "Actualizar vista previa",
-      "stopDevServer": "Detener servidor de desarrollo"
+      "stopDevServer": "Detener servidor de desarrollo",
+      "clickToEdit": "Clic para editar URL",
+      "resetUrl": "Restablecer a URL detectada"
     },
     "troubleAlert": {
       "item1": "¿Se inició correctamente el servidor de desarrollo? Puede haber un error que necesites resolver, o quizás sea necesario instalar dependencias.",

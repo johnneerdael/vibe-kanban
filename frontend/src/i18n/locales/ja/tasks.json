@@ -235,7 +235,8 @@
       "changeTargetBranch": "ターゲットブランチの変更に失敗しました",
       "mergeChanges": "変更のマージに失敗しました",
       "pushChanges": "変更のプッシュに失敗しました",
-      "rebaseBranch": "ブランチのリベースに失敗しました"
+      "rebaseBranch": "ブランチのリベースに失敗しました",
+      "branchStatusUnavailable": "ブランチのステータスを取得できません。ターゲットブランチの変更は引き続き可能です。"
     },
     "labels": {
       "taskBranch": "タスクブランチ"
@@ -312,7 +313,9 @@
       "copyUrl": "URLをコピー",
       "openInTab": "新しいタブで開く",
       "refresh": "プレビューを更新",
-      "stopDevServer": "開発サーバーを停止"
+      "stopDevServer": "開発サーバーを停止",
+      "clickToEdit": "クリックしてURLを編集",
+      "resetUrl": "検出されたURLにリセット"
     },
     "troubleAlert": {
       "item1": "開発サーバーが正常に起動しましたか？解決すべきバグがあるか、依存関係のインストールが必要な可能性があります。",

@@ -46,7 +46,7 @@ use services::services::{
     config::Config,
     container::{ContainerError, ContainerRef, ContainerService},
     diff_stream::{self, DiffStreamHandle},
-    git::{Commit, GitCli, GitService},
+    git::{GitCli, GitService},
     image::ImageService,
     notification::NotificationService,
     queued_message::QueuedMessageService,
@@ -112,7 +112,7 @@ impl LocalContainerService {
             notification_service,
         };
 
-        container.spawn_workspace_cleanup().await;
+        container.spawn_workspace_cleanup();
 
         container
     }
@@ -194,19 +194,20 @@ impl LocalContainerService {
         Ok(())
     }
 
-    pub async fn spawn_workspace_cleanup(&self) {
+    pub fn spawn_workspace_cleanup(&self) {
         let db = self.db.clone();
-        let mut cleanup_interval = tokio::time::interval(tokio::time::Duration::from_secs(1800)); // 30 minutes
-        WorkspaceManager::cleanup_orphan_workspaces(&self.db.pool).await;
+        let cleanup_expired = Self::cleanup_expired_workspaces;
         tokio::spawn(async move {
+            WorkspaceManager::cleanup_orphan_workspaces(&db.pool).await;
+
+            let mut cleanup_interval =
+                tokio::time::interval(tokio::time::Duration::from_secs(1800)); // 30 minutes
             loop {
                 cleanup_interval.tick().await;
                 tracing::info!("Starting periodic workspace cleanup...");
-                Self::cleanup_expired_workspaces(&db)
-                    .await
-                    .unwrap_or_else(|e| {
-                        tracing::error!("Failed to clean up expired workspaces: {}", e)
-                    });
+                cleanup_expired(&db).await.unwrap_or_else(|e| {
+                    tracing::error!("Failed to clean up expired workspaces: {}", e)
+                });
             }
         });
     }
@@ -631,20 +632,11 @@ impl LocalContainerService {
     /// Returns a stream that owns the filesystem watcher - when dropped, watcher is cleaned up
     async fn create_live_diff_stream(
         &self,
-        worktree_path: &Path,
-        base_commit: &Commit,
-        stats_only: bool,
-        path_prefix: Option<String>,
+        args: diff_stream::DiffStreamArgs,
     ) -> Result<DiffStreamHandle, ContainerError> {
-        diff_stream::create(
-            self.git().clone(),
-            worktree_path.to_path_buf(),
-            base_commit.clone(),
-            stats_only,
-            path_prefix,
-        )
-        .await
-        .map_err(|e| ContainerError::Other(anyhow!("{e}")))
+        diff_stream::create(args)
+            .await
+            .map_err(|e| ContainerError::Other(anyhow!("{e}")))
     }
 
     /// Extract the last assistant message from the MsgStore history
@@ -725,7 +717,11 @@ impl LocalContainerService {
 
         if let Err(e) = self
             .image_service
-            .copy_images_by_task_to_worktree(workspace_dir, workspace.task_id)
+            .copy_images_by_task_to_worktree(
+                workspace_dir,
+                workspace.task_id,
+                workspace.agent_working_dir.as_deref(),
+            )
             .await
         {
             tracing::warn!("Failed to copy task images to workspace: {}", e);
@@ -968,6 +964,7 @@ impl ContainerService for LocalContainerService {
         &self,
         workspace: &Workspace,
     ) -> Result<ContainerRef, ContainerError> {
+        Workspace::touch(&self.db.pool, workspace.id).await?;
         let repositories =
             WorkspaceRepo::find_repos_for_workspace(&self.db.pool, workspace.id).await?;
 
@@ -1270,12 +1267,19 @@ impl ContainerService for LocalContainerService {
             };
 
             let stream = self
-                .create_live_diff_stream(
-                    &worktree_path,
-                    &base_commit,
+                .create_live_diff_stream(diff_stream::DiffStreamArgs {
+                    git_service: self.git().clone(),
+                    db: self.db().clone(),
+                    workspace_id: workspace.id,
+                    repo_id: repo.id,
+                    repo_path: repo.path.clone(),
+                    worktree_path: worktree_path.clone(),
+                    branch: branch.to_string(),
+                    target_branch: target_branch.clone(),
+                    base_commit: base_commit.clone(),
                     stats_only,
-                    Some(repo.name.clone()),
-                )
+                    path_prefix: Some(repo.name.clone()),
+                })
                 .await?;
 
             streams.push(Box::pin(stream));
